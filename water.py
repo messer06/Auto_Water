@@ -23,15 +23,15 @@ def get_last_watered():
         return "NEVER!"
       
 def get_status(pin = 8):
-    GPIO.setup(pin, GPIO.IN) 
+    GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
     time.sleep(3)
     status = 0
-    for i in range(0,9):
+    for i in range(0,100):
         status = status + GPIO.input(pin)
-        time.sleep(.2)
-    status = status /10 > .5    
+        time.sleep(.05)
+    status = status /100 > .5    
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
