@@ -26,8 +26,12 @@ def get_status(pin = 8):
     GPIO.setup(pin, GPIO.IN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
-    time.sleep(1)
-    status = GPIO.input(pin)
+    time.sleep(3)
+    status = 0
+    for i in range(0,9):
+        status = status + GPIO.input(pin)
+    status = status /10 > .5    
+    GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
 
