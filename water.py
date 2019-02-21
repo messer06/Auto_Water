@@ -5,7 +5,7 @@ import time
 import boto3
 import pandas
 
-session = boto3.Session(
+session = boto3.Session()
 credentials = pandas.read_csv('/home/pi/Documents/accessKeys.csv')
 client = session.client('sns',region_name="us-east-1",aws_access_key_id=credentials.loc[0,'Access key ID'],aws_secret_access_key=credentials.loc[0,'Secret access key'])
 f = open("/home/pi/Documents/PhoneNumber.txt")
