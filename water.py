@@ -3,10 +3,10 @@ import RPi.GPIO as GPIO
 import datetime
 import time
 import boto3
-import pandas
+import pandas as pd
 
 session = boto3.Session()
-credentials = pandas.read_csv('/home/pi/Documents/accessKeys.csv')
+credentials = pd.read_csv('/home/pi/Documents/accessKeys.csv')
 client = session.client('sns',
                         region_name="us-east-1",
                         aws_access_key_id=credentials.loc[0,'Access key ID'],
@@ -14,6 +14,8 @@ client = session.client('sns',
 f = open("/home/pi/Documents/PhoneNumber.txt")
 TextNumber = f.read()
 f.close()
+
+Moist_Hist = pd.dataframe(columns=['DateTime','Status'])
 
 init = False
 
@@ -37,6 +39,7 @@ def get_status(pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /100 > .5    
+    Moist_Hist.add([datetime.datetime.now(),status])
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
