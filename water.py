@@ -28,7 +28,7 @@ def get_last_watered():
         return "NEVER!"
       
 def get_status(pin = 8):
-    Moist_Hist = pd.read_csv('/home/pi/Documents/accessKeys.csv')
+    Moist_Hist = pd.read_csv('/home/pi/Documents/Moist_Hist.csv')
     GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
