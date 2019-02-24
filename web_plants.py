@@ -8,14 +8,14 @@ import subprocess
 
 app = Flask(__name__)
 
-def template(title = "AutoWatering System", text = ""):
+def template(title = "AutoWatering System", text = "",Moist_Hist = pd.DataFrame.()):
     now = datetime.datetime.now()
     timeString = now
     templateDate = {
         'title' : title,
         'time' : timeString,
         'text' : text,
-        'Moist_Hist': water.Moist_Hist
+        'Moist_Hist': Moist_Hist
         }
     return templateDate
 
