@@ -14,7 +14,8 @@ def template(title = "AutoWatering System", text = ""):
     templateDate = {
         'title' : title,
         'time' : timeString,
-        'text' : text
+        'text' : text,
+        'water': water.Moist_Hist
         }
     return templateDate
 
