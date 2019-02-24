@@ -29,7 +29,7 @@ def get_last_watered():
     except:
         return "NEVER!"
       
-def get_status(Moist_Hist,pin = 8):
+def get_status(Moist_Hist=Moist_Hist,pin = 8):
     GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
