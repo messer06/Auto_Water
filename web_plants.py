@@ -5,10 +5,10 @@ import water
 import os
 import cgi
 import subprocess
-
+import pandas as pd
 app = Flask(__name__)
 
-def template(title = "AutoWatering System", text = "",Moist_Hist = pd.DataFrame.()):
+def template(title = "AutoWatering System", text = "",Moist_Hist = pd.DataFrame()):
     now = datetime.datetime.now()
     timeString = now
     templateDate = {
