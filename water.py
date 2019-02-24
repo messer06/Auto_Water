@@ -16,7 +16,7 @@ TextNumber = f.read()
 f.close()
 
 Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
-
+Moist_Hist=Moist_Hist.append(pd.DataFrame([[datetime.datetime.now(),0]],columns=['DateTime','Status']))
 init = False
 
 GPIO.setmode(GPIO.BOARD) # Broadcom pin-numbering scheme
