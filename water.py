@@ -38,7 +38,7 @@ def get_status(pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /10 > .5    
-    Moist_Hist=pd.concat([pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']),Moist_Hist[:9],ignore_index=True)
+    Moist_Hist=pd.concat([pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']),Moist_Hist[:9]],ignore_index=True)
     Moist_Hist.to_csv('/home/pi/Documents/Water/Moist_Hist.csv')
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
