@@ -29,7 +29,7 @@ def get_last_watered():
     except:
         return "NEVER!"
       
-def get_status(pin = 8):
+def get_status(pin = 8,Moist_Hist):
     GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
@@ -39,7 +39,7 @@ def get_status(pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /100 > .5    
-    Moist_Hist.add(pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status'])
+    Moist_Hist=Moist_Hist.append(pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']))
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
