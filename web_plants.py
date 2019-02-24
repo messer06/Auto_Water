@@ -15,7 +15,7 @@ def template(title = "AutoWatering System", text = ""):
         'title' : title,
         'time' : timeString,
         'text' : text,
-        'water': water.Moist_Hist
+        'Moist_Hist': water.Moist_Hist
         }
     return templateDate
 
@@ -38,7 +38,7 @@ def action():
     else:
         message = "I'm a happy plant"
 
-    templateData = template(text = message)
+    templateData = template(text = message, Moist_Hist=water.Moist_Hist)
     return render_template('main.html', **templateData)
 
 @app.route("/water/<toggle>")
