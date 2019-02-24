@@ -8,12 +8,15 @@ import subprocess
 import pandas as pd
 app = Flask(__name__)
 
+from app import Moist_Hist
+
 Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
 
-def template(title = "AutoWatering System", text = "",Moist_Hist = pd.DataFrame()):
+def template(title = "AutoWatering System", text = ""):
+    global Moist_Hist
     now = datetime.datetime.now()
     timeString = now
-    templateDate = {
+    templateData = {
         'title' : title,
         'time' : timeString,
         'text' : text,
@@ -21,21 +24,24 @@ def template(title = "AutoWatering System", text = "",Moist_Hist = pd.DataFrame(
         'tables': [Moist_Hist.to_html(classes='data')],
         'titles': Moist_Hist.columns.values
         }
-    return templateDate
+    return templateData
 
 @app.route("/")
-def hello(Moist_Hist = pd.DataFrame()):
+def hello():
+    global Moist_Hist
     templateData = template(Moist_Hist=Moist_Hist)
     return render_template('main.html', **templateData)
 
 @app.route("/last_watered")
-def check_last_watered(Moist_Hist = pd.DataFrame()):
+def check_last_watered():
+    global Moist_Hist
     templateData = template(text = water.get_last_watered(), Moist_Hist=Moist_Hist)
     return render_template('main.html', **templateData)
 
 @app.route("/sensor")
-def action(Moist_Hist = pd.DataFrame()):
-    status = water.get_status()
+def action():
+    global Moist_Hist
+    status = water.get_status(Moint)
     message = ""
     if (status == 0):
         message = "Water me please!"
@@ -46,14 +52,16 @@ def action(Moist_Hist = pd.DataFrame()):
     return render_template('main.html', **templateData)
 
 @app.route("/water/<toggle>")
-def action2(toggle,Moist_Hist = pd.DataFrame()):
+def action2(toggle):
+    global Moist_Hist
     delay = int(toggle)
     water.pump_on(7,delay*60)
     templateData = template(text = "Watered Once", Moist_Hist=Moist_Hist)
     return render_template('main.html', **templateData)
 
 @app.route("/auto/water/<toggle>")
-def auto_water(toggle,Moist_Hist = pd.DataFrame()):
+def auto_water(toggle):
+    global Moist_Hist
     running = False
     if toggle == "ON":
         templateData = template(text = "Auto Watering On", Moist_Hist=Moist_Hist)
