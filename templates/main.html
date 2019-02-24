@@ -15,7 +15,7 @@
   <a href="/water/10"><button>Water 10 min</button></a>
   <a href="/last_watered"><button>Check Time Last Watered</button></a>
   <h2> Moisture Sensor History</h2>
-  {% for table in [Moist_Hist.to_html(classes='data', header="true")] %}
+  {% for table in tables %}
               {{titles[loop.index]}}
               {{ table|safe }}
   {% endfor %}
