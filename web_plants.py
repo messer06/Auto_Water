@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, redirect, url_for,request
 import psutil
 import datetime
@@ -7,8 +8,6 @@ import cgi
 import subprocess
 import pandas as pd
 app = Flask(__name__)
-
-from app import Moist_Hist
 
 Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
 
@@ -29,7 +28,7 @@ def template(title = "AutoWatering System", text = ""):
 @app.route("/")
 def hello():
     global Moist_Hist
-    templateData = template(Moist_Hist=Moist_Hist)
+    templateData = template()
     return render_template('main.html', **templateData)
 
 @app.route("/last_watered")
