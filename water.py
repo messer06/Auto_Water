@@ -39,7 +39,7 @@ def get_status(pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /100 > .5    
-    Moist_Hist.add([datetime.datetime.now(),status])
+    Moist_Hist.add(pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status'])
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
