@@ -15,7 +15,9 @@ def template(title = "AutoWatering System", text = "",Moist_Hist = pd.DataFrame(
         'title' : title,
         'time' : timeString,
         'text' : text,
-        'Moist_Hist': Moist_Hist
+        'Moist_Hist': Moist_Hist,
+        'tables': [Moist_Hist.to_html(classes='data')],
+        'titles': Moist_Hist.columns.values)
         }
     return templateDate
 
