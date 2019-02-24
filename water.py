@@ -35,10 +35,10 @@ def get_status(Moist_Hist=Moist_Hist,pin = 8):
     GPIO.output(10,GPIO.HIGH)
     time.sleep(3)
     status = 0
-    for i in range(0,100):
+    for i in range(0,10):
         status = status + GPIO.input(pin)
         time.sleep(.05)
-    status = status /100 > .5    
+    status = status /10 > .5    
     Moist_Hist=Moist_Hist.append(pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']))
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
