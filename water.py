@@ -15,8 +15,6 @@ f = open("/home/pi/Documents/PhoneNumber.txt")
 TextNumber = f.read()
 f.close()
 
-Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
-Moist_Hist=Moist_Hist.append(pd.DataFrame([[datetime.datetime.now(),0]],columns=['DateTime','Status']))
 init = False
 
 GPIO.setmode(GPIO.BOARD) # Broadcom pin-numbering scheme
@@ -29,7 +27,8 @@ def get_last_watered():
     except:
         return "NEVER!"
       
-def get_status(Moist_Hist=Moist_Hist,pin = 8):
+def get_status(pin = 8):
+    Moist_Hist = pd.read_csv('/home/pi/Documents/accessKeys.csv')
     GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
@@ -39,7 +38,8 @@ def get_status(Moist_Hist=Moist_Hist,pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /10 > .5    
-    Moist_Hist=Moist_Hist.append(pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']))
+    Moist_Hist=pd.concat([pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']),Moist_Hist[:9],ignore_index=True)
+    Moist_Hist.to_csv('/home/pi/Documents/Water/Moist_Hist.csv')
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
