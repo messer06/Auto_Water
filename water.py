@@ -15,7 +15,7 @@ f = open("/home/pi/Documents/PhoneNumber.txt")
 TextNumber = f.read()
 f.close()
 
-Moist_Hist = pd.dataframe(columns=['DateTime','Status'])
+Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
 
 init = False
 
