@@ -55,7 +55,7 @@ def auto_water(delay = 5*60, pump_pin = 7, water_sensor_pin = 8):
             wet = get_status(pin = water_sensor_pin)
             if not wet:
                 if consecutive_water_count < 4:
-                    pump_on(pump_pin, 5*60)
+                    pump_on(pump_pin, 1*60)
                 consecutive_water_count += 1
             else:
                 consecutive_water_count = 0
