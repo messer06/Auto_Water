@@ -33,10 +33,10 @@ def get_status(pin = 8):
     GPIO.output(10,GPIO.HIGH)
     time.sleep(3)
     status = 0
-    for i in range(0,100):
+    for i in range(0,9):
         status = status + GPIO.input(pin)
         time.sleep(.05)
-    status = status /100 > .5    
+    status = status /10 > .5    
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
@@ -72,7 +72,9 @@ def pump_on(pump_pin = 7, delay = 1):
        delay = 1
     init_output(pump_pin)
     f = open("/home/pi/Documents/Water/last_watered.txt", "w")
-    f.write("Last watered {}".format(datetime.datetime.now()))
+    content = f.read()
+    f.seek(0, 0)
+    f.write("Last watered {}".format(datetime.datetime.now()) + ' for ' + delay + ' seconds' + '\n' + content)
     f.close()
     GPIO.output(pump_pin, GPIO.LOW)
     time.sleep(delay)
