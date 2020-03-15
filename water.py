@@ -3,10 +3,10 @@ import RPi.GPIO as GPIO
 import datetime
 import time
 import boto3
-import pandas
+import pandas as pd
 
 session = boto3.Session()
-credentials = pandas.read_csv('/home/pi/Documents/accessKeys.csv')
+credentials = pd.read_csv('/home/pi/Documents/accessKeys.csv')
 client = session.client('sns',
                         region_name="us-east-1",
                         aws_access_key_id=credentials.loc[0,'Access key ID'],
@@ -33,10 +33,10 @@ def get_status(pin = 8):
     GPIO.output(10,GPIO.HIGH)
     time.sleep(3)
     status = 0
-    for i in range(0,100):
+    for i in range(0,9):
         status = status + GPIO.input(pin)
         time.sleep(.05)
-    status = status /100 > .5    
+    status = status /10 > .5    
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
@@ -71,9 +71,16 @@ def pump_on(pump_pin = 7, delay = 1):
     except: 
        delay = 1
     init_output(pump_pin)
-    f = open("/home/pi/Documents/Water/last_watered.txt", "w")
-    f.write("Last watered {}".format(datetime.datetime.now()))
-    f.close()
+
+    #read watering history from file
+    #with open("/home/pi/Documents/Water/last_watered.txt", "r") as last_watered:
+    #	content = [next(last_watered) for x in range(98)]
+    try: water_history = pd.read_csv("/home/pi/Documents/Water/last_watered.txt", nrows=100)
+    except: water_history =pd.dataframe()
+    #write new line on top of top 100 last waters
+    with open("/home/pi/Documents/Water/last_watered.txt", "w") as last_watered:
+        last_watered.write("Last watered {}".format(datetime.datetime.now()) + ' for ' + str(delay) + ' seconds' + '\n')
+        water_history.to_csv(last_watered, index = False)
     GPIO.output(pump_pin, GPIO.LOW)
     time.sleep(delay)
     GPIO.output(pump_pin, GPIO.HIGH)
