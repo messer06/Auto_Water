@@ -34,12 +34,12 @@ def get_status(pin = 8):
     GPIO.output(10,GPIO.HIGH)
     time.sleep(3)
     status = 0
-    for i in range(0,10):
+
+    for i in range(0,9):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /10 > .5    
-    Moist_Hist=pd.concat([pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']),Moist_Hist[:9]],ignore_index=True)
-    Moist_Hist.to_csv('/home/pi/Documents/Water/Moist_Hist.csv')
+
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
@@ -58,7 +58,7 @@ def auto_water(delay = 5*60, pump_pin = 7, water_sensor_pin = 8):
             wet = get_status(pin = water_sensor_pin)
             if not wet:
                 if consecutive_water_count < 4:
-                    pump_on(pump_pin, 10*60)
+                    pump_on(pump_pin, 1*60)
                 consecutive_water_count += 1
             else:
                 consecutive_water_count = 0
@@ -74,9 +74,16 @@ def pump_on(pump_pin = 7, delay = 1):
     except: 
        delay = 1
     init_output(pump_pin)
-    f = open("/home/pi/Documents/Water/last_watered.txt", "w")
-    f.write("Last watered {}".format(datetime.datetime.now()))
-    f.close()
+
+    #read watering history from file
+    #with open("/home/pi/Documents/Water/last_watered.txt", "r") as last_watered:
+    #	content = [next(last_watered) for x in range(98)]
+    try: water_history = pd.read_csv("/home/pi/Documents/Water/last_watered.txt", nrows=100)
+    except: water_history =pd.dataframe()
+    #write new line on top of top 100 last waters
+    with open("/home/pi/Documents/Water/last_watered.txt", "w") as last_watered:
+        last_watered.write("Last watered {}".format(datetime.datetime.now()) + ' for ' + str(delay) + ' seconds' + '\n')
+        water_history.to_csv(last_watered, index = False)
     GPIO.output(pump_pin, GPIO.LOW)
     time.sleep(delay)
     GPIO.output(pump_pin, GPIO.HIGH)
