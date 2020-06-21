@@ -21,14 +21,9 @@ GPIO.setmode(GPIO.BOARD) # Broadcom pin-numbering scheme
 
 
 def get_last_watered():
-    try:
-        f = open("/home/pi/Documents/Water/last_watered.txt", "r")
-        return f.readline()
-    except:
-        return "NEVER!"
+    return db.get_num(1)
       
 def get_status(pin = 8):
-    Moist_Hist = pd.read_csv('/home/pi/Documents/Water/Moist_Hist.csv')
     GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.HIGH)
@@ -39,9 +34,7 @@ def get_status(pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /10 > .5    
-    Moist_Hist=pd.concat([pd.DataFrame([[datetime.datetime.now(),status]],columns=['DateTime','Status']),Moist_Hist[:9]],ignore_index=True)
-    Moist_Hist.to_csv('/home/pi/Documents/Water/Moist_Hist.csv')   
-
+    db.add_obs({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"status": status))
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status
@@ -77,15 +70,8 @@ def pump_on(pump_pin = 7, delay = 1):
        delay = 1
     init_output(pump_pin)
 
-    #read watering history from file
-    #with open("/home/pi/Documents/Water/last_watered.txt", "r") as last_watered:
-    #	content = [next(last_watered) for x in range(98)]
-    try: water_history = pd.read_csv("/home/pi/Documents/Water/last_watered.txt", nrows=100)
-    except: water_history =pd.dataframe()
-    #write new line on top of top 100 last waters
-    with open("/home/pi/Documents/Water/last_watered.txt", "w") as last_watered:
-        last_watered.write("Last watered {}".format(datetime.datetime.now()) + ' for ' + str(delay) + ' seconds' + '\n')
-        water_history.to_csv(last_watered, index = False)
+    #read watering history from db
+    db.add_water({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"duration": str(delay)})
     GPIO.output(pump_pin, GPIO.LOW)
     time.sleep(delay)
     GPIO.output(pump_pin, GPIO.HIGH)

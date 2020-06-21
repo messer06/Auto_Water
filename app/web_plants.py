@@ -1,18 +1,17 @@
 
-from flask import Flask, render_template, redirect, url_for,request
+from flask import Flask, render_template
 import psutil
 import datetime
-import water
+from app import water
 import os
-import cgi
 import subprocess
 import pandas as pd
+
 app = Flask(__name__)
 
 Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
 
 def template(title = "AutoWatering System", text = ""):
-    global Moist_Hist
     now = datetime.datetime.now()
     timeString = now
     templateData = {
@@ -40,7 +39,7 @@ def check_last_watered():
 @app.route("/sensor")
 def action():
     global Moist_Hist
-    status = water.get_status(Moint)
+    status = water.get_status()
     message = ""
     if (status == 0):
         message = "Water me please!"
@@ -54,7 +53,7 @@ def action():
 def action2(toggle):
     global Moist_Hist
     delay = int(toggle)
-    water.pump_on(7,delay*60)
+    water.pump_on(7, delay * 60)
     templateData = template(text = "Watered Once")
     return render_template('main.html', **templateData)
 
