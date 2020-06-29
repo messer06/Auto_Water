@@ -1,19 +1,19 @@
 # External module imp
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
+import mockGPIO as GPIO
+
 import datetime
 import time
 import boto3
 import pandas as pd
 
 session = boto3.Session()
-credentials = pd.read_csv('/home/pi/Documents/accessKeys.csv')
+credentials = pd.read_csv('~/Documents/accessKeys.csv')
 client = session.client('sns',
                         region_name="us-east-1",
                         aws_access_key_id=credentials.loc[0,'Access key ID'],
                         aws_secret_access_key=credentials.loc[0,'Secret access key'])
-f = open("/home/pi/Documents/PhoneNumber.txt")
-TextNumber = f.read()
-f.close()
+TextNumber = pd.read_csv('~/Documents/PhoneNumber.txt',header=None)[0]
 
 init = False
 
@@ -34,7 +34,7 @@ def get_status(pin = 8):
         status = status + GPIO.input(pin)
         time.sleep(.05)
     status = status /10 > .5    
-    db.add_obs({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"status": status))
+    db.add_obs({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"status": status})
     GPIO.setup(10,GPIO.OUT)
     GPIO.output(10,GPIO.LOW)
     return status

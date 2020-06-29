@@ -1,10 +1,14 @@
 import sqlite3 as dbapi2
-
+import os
 class Moist_Hist:
     def __init__(self, dbfile):
         self.dbfile = dbfile
         self.last_key = None
 
+    # def make_database(self):
+    #     with
+    #         "CREATE TABLE IF NOT EXISTS MOISTHIST (KEY integer PRIMARY KEY,eventtime datetime NOT NULL,status INTEGER NOT NULL);"
+    #         "CREATE TABLE IF NOT EXISTS WATERHIST (KEY integer PRIMARY KEY,eventtime datetime NOT NULL,DURATION FLOAT NOT NULL);"
     def add_obs(self, status):
         with dbapi2.connect(self.dbfile) as connection:
             cursor = connection.cursor()
