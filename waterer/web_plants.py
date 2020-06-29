@@ -6,10 +6,7 @@ from waterer import water
 import os
 import subprocess
 import pandas as pd
-
-app = Flask(__name__)
-
-Moist_Hist = pd.DataFrame(columns=['DateTime','Status'])
+from flask import current_app as app
 
 def template(title = "AutoWatering System", text = ""):
     now = datetime.datetime.now()
@@ -17,10 +14,7 @@ def template(title = "AutoWatering System", text = ""):
     templateData = {
         'title' : title,
         'time' : timeString,
-        'text' : text,
-        'Moist_Hist': Moist_Hist,
-        'tables': [Moist_Hist.to_html(classes='data')],
-        'titles': Moist_Hist.columns.values
+        'text' : text
         }
     return templateData
 
