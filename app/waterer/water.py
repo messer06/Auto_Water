@@ -1,11 +1,12 @@
 # External module imp
-# import RPi.GPIO as GPIO
-import mockGPIO as GPIO
-
+import app.RPi.GPIO as GPIO
+# from waterer import db
+# from waterer.models import MoistHist, WaterHist
 import datetime
 import time
 import boto3
 import pandas as pd
+from sqlalchemy import desc
 
 session = boto3.Session()
 credentials = pd.read_csv('~/Documents/accessKeys.csv')
@@ -21,22 +22,21 @@ GPIO.setmode(GPIO.BOARD) # Broadcom pin-numbering scheme
 
 
 def get_last_watered():
-    return db.get_num(1)
+    return db.session.query(WaterHist).order_by(desc('eventtime')).first()
       
 def get_status(pin = 8):
-    GPIO.setup(pin, GPIO.IN,pull_up_down=GPIO.PUD_DOWN) 
-    GPIO.setup(10,GPIO.OUT)
-    GPIO.output(10,GPIO.HIGH)
+    GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(10, GPIO.OUT)
+    GPIO.output(10, GPIO.HIGH)
     time.sleep(3)
     status = 0
 
     for i in range(0,10):
         status = status + GPIO.input(pin)
         time.sleep(.05)
-    status = status /10 > .5    
-    db.add_obs({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"status": status})
-    GPIO.setup(10,GPIO.OUT)
-    GPIO.output(10,GPIO.LOW)
+    status = status /10 > .5
+    GPIO.setup(10, GPIO.OUT)
+    GPIO.output(10, GPIO.LOW)
     return status
 
 def init_output(pin):

@@ -1,11 +1,11 @@
 
-from flask import Flask, render_template
+from flask import render_template
 import psutil
 import datetime
-from waterer import water
+from app.waterer import water
+# from waterer.models import MoistHist, WaterHist
 import os
 import subprocess
-import pandas as pd
 from flask import current_app as app
 
 def template(title = "AutoWatering System", text = ""):
@@ -31,6 +31,7 @@ def check_last_watered():
 @app.route("/sensor")
 def action():
     status = water.get_status()
+    db.session.add(MoistHist(eventtime= datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), status= status))
     message = ""
     if (status == 0):
         message = "Water me please!"
