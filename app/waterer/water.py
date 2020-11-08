@@ -9,12 +9,12 @@ import pandas as pd
 from sqlalchemy import desc
 
 session = boto3.Session()
-credentials = pd.read_csv('~/Documents/accessKeys.csv')
+credentials = pd.read_csv('/run/secrets/aws_credentials')
 client = session.client('sns',
                         region_name="us-east-1",
                         aws_access_key_id=credentials.loc[0,'Access key ID'],
                         aws_secret_access_key=credentials.loc[0,'Secret access key'])
-TextNumber = pd.read_csv('~/Documents/PhoneNumber.txt',header=None)[0]
+TextNumber = pd.read_csv('/run/secrets/phone_number',header=None)[0]
 
 init = False
 

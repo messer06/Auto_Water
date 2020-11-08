@@ -15,7 +15,6 @@ def create_app():
     Base = automap_base()
     # reflect the tables
     Base.prepare(app.db.engine, reflect=True)
-    print(Base.metadata)
     # MoistHist = Base.classes.MOISTHIST
     # WaterHist = Base.classes.WATERHIST
 

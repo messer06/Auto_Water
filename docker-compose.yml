@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   proxy:
@@ -7,8 +7,24 @@ services:
       dockerfile: Dockerfile
     image: proxy
     ports:
-      - '80:80' # expose 80 on host and sent to 80 in container
-#    volumes:
-#      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - '80:5000' # expose 80 on host and sent to 5000 in container
+    secrets:
+      - aws_credentials
+      - phone_number
+    volumes:
+      - type: bind
+        source: .
+        target: /var/www
+    working_dir:
+      /var/www
+    entrypoint:
+      python
+    command:
+      wsgi.py
 #  web:
 #    image: httpd  # this will use httpd:latest
+secrets:
+   aws_credentials:
+     file: accessKeys.csv
+   phone_number:
+     file: PhoneNumber.txt

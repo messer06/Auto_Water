@@ -4,6 +4,7 @@ psutil
 Flask
 #rpi.gpio
 flask_login
+flask_migrate
 boto3
 flask_assets
 python-dotenv
