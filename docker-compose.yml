@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+  db_postgres:
+    image: postgres:13.0
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: Hello1!
+      POSTGRES_DB: waterer_db
+    volumes:
+      - drupal-data:/var/lib/postgresql/data
   proxy:
     build:
       context: .
@@ -21,8 +29,8 @@ services:
       python
     command:
       wsgi.py
-#  web:
-#    image: httpd  # this will use httpd:latest
+volumes:
+  drupal-data:
 secrets:
    aws_credentials:
      file: accessKeys.csv

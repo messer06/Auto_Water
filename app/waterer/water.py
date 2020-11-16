@@ -20,9 +20,8 @@ init = False
 
 GPIO.setmode(GPIO.BOARD) # Broadcom pin-numbering scheme
 
-
 def get_last_watered():
-    return db.session.query(WaterHist).order_by(desc('eventtime')).first()
+    return app.db.session.query(WaterHist).order_by(desc('eventtime')).first()
       
 def get_status(pin = 8):
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -71,7 +70,7 @@ def pump_on(pump_pin = 7, delay = 1):
     init_output(pump_pin)
 
     #read watering history from db
-    db.add_water({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"duration": str(delay)})
+    app.db.add_water({"eventtime": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),"duration": str(delay)})
     GPIO.output(pump_pin, GPIO.LOW)
     time.sleep(delay)
     GPIO.output(pump_pin, GPIO.HIGH)

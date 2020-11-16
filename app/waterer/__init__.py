@@ -26,7 +26,10 @@ def create_app():
         # Import parts of our core Flask app
         from . import web_plants
         from .assets import compile_static_assets
+        from .models import WaterHist, MoistHist
 
+        app.db.WaterHist = WaterHist
+        app.db.MoistHist = MoistHist
 
         # Import Dash application
         from .plotlydash.dashapp1 import create_dashboard

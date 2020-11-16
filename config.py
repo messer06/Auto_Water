@@ -15,7 +15,12 @@ class Config:
     SECRET_KEY = environ.get('SECRET_KEY')
 
     # Database
-    SQLALCHEMY_DATABASE_URI = environ.get('DATABASE')
+    user = environ['POSTGRES_USER']
+    password = environ['POSTGRES_PASSWORD']
+    host = "pi_waterer_" + environ['POSTGRES_HOST'] + "_1"
+    port = environ['POSTGRES_PORT']
+    database = environ['POSTGRES_DB']
+    SQLALCHEMY_DATABASE_URI = f'postgresql://{user}:{password}@{host}:{port}/{database}'
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
