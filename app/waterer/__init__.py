@@ -27,9 +27,7 @@ def create_app():
         from . import web_plants
         from .assets import compile_static_assets
         from .models import WaterHist, MoistHist
-
-        app.db.WaterHist = WaterHist
-        app.db.MoistHist = MoistHist
+        app.db.create_all()
 
         # Import Dash application
         from .plotlydash.dashapp1 import create_dashboard

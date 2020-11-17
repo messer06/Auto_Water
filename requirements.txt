@@ -9,3 +9,4 @@ boto3
 flask_assets
 python-dotenv
 flask-sqlalchemy
+sqlalchemy

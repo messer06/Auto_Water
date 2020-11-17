@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: Hello1!
       POSTGRES_DB: waterer_db
     volumes:
-      - drupal-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
   proxy:
     build:
       context: .
@@ -30,7 +30,7 @@ services:
     command:
       wsgi.py
 volumes:
-  drupal-data:
+  postgres-data:
 secrets:
    aws_credentials:
      file: accessKeys.csv

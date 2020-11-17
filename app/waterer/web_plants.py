@@ -1,70 +1,81 @@
-
 from flask import render_template
 import psutil
 import datetime
 from app.waterer import water
-# from waterer.models import MoistHist, WaterHist
+from app.waterer.models import MoistHist, WaterHist
 import os
 import subprocess
 from flask import current_app as app
 
-def template(title = "AutoWatering System", text = ""):
+
+def template(title="AutoWatering System", text=""):
     now = datetime.datetime.now()
-    timeString = now
-    templateData = {
-        'title' : title,
-        'time' : timeString,
-        'text' : text
-        }
-    return templateData
+    timestring = now
+    templatedata = {
+        'title': title,
+        'time': timestring,
+        'text': text
+    }
+    return templatedata
+
 
 @app.route("/")
 def hello():
-    templateData = template()
-    return render_template('main.html', **templateData)
+    templatedata = template()
+    return render_template('main.html', **templatedata)
+
 
 @app.route("/last_watered")
 def check_last_watered():
-    templateData = template(text = water.get_last_watered())
-    return render_template('main.html', **templateData)
+    templatedata = template(
+        text=(WaterHist.query.order_by(WaterHist.eventtime.desc()).with_entities(WaterHist.eventtime).first())[
+            0].strftime("%d-%b-%y %H:%M:%S"))
+    return render_template('main.html', **templatedata)
+
 
 @app.route("/sensor")
 def action():
     status = water.get_status()
-    db.session.add(MoistHist(eventtime= datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), status= status))
+    moist_event = MoistHist(eventtime=datetime.datetime.now(), status=status)
+    app.db.session.add(moist_event)
+    app.db.session.commit()
     message = ""
-    if (status == 0):
+    if status == 0:
         message = "Water me please!"
     else:
         message = "I'm a happy plant"
 
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
+    templatedata = template(text=message)
+    return render_template('main.html', **templatedata)
+
 
 @app.route("/water/<toggle>")
 def action2(toggle):
     delay = int(toggle)
     water.pump_on(7, delay * 60)
-    templateData = template(text = "Watered Once")
-    return render_template('main.html', **templateData)
+    water_event = WaterHist(eventtime=datetime.datetime.now(), duration=delay * 60)
+    app.db.session.add(water_event)
+    app.db.session.commit()
+    templatedata = template(text="Watered Once")
+    return render_template('main.html', **templatedata)
+
 
 @app.route("/auto/water/<toggle>")
 def auto_water(toggle):
     running = False
     if toggle == "ON":
-        templateData = template(text = "Auto Watering On")
+        templatedata = template(text="Auto Watering On")
         for process in psutil.process_iter():
             try:
                 if process.cmdline()[1] == 'auto_water.py':
-                    templateData = template(text = "Already running")
+                    templatedata = template(text="Already running")
                     running = True
             except:
                 pass
         if not running:
-            auto_proc = subprocess.Popen(["python3","auto_water.py"])
+            subprocess.Popen(["python3", "auto_water.py"])
     else:
-        templateData = template(text = "Auto Watering Off")
+        templatedata = template(text="Auto Watering Off")
         os.system("pkill -f water.py")
 
-    return render_template('main.html', **templateData)
-
+    return render_template('main.html', **templatedata)
